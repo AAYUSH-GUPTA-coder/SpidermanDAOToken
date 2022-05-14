@@ -11,7 +11,7 @@ contract SpidermanDAOToken is ERC20("Spiderman DAO", "SpiderDAO"),Ownable {
      * Aggregator: MATIC / USD
      * Address: 0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada
      */
-    AggregatorV3Interface public priceFeed =
+    AggregatorV3Interface internal priceFeed =
         AggregatorV3Interface(0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada);
 
     function getLatestPrice() public view returns (int256) {
