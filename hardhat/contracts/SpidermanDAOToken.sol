@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
+/*
+@author Aayush Gupta. Twiiter: @Aayush_gupta_ji Github: AAYUSH-GUPTA-coder
+ */
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract SpidermanDAOToken is ERC20("Spiderman DAO", "SpiderDAO"),Ownable {
+contract SpidermanDAOToken is ERC20("Spiderman DAO", "SpiderDAO"), Ownable {
     /**
      * Network: Mumbai Testnet
      * Aggregator: MATIC / USD
@@ -24,7 +27,7 @@ contract SpidermanDAOToken is ERC20("Spiderman DAO", "SpiderDAO"),Ownable {
     // Get the price of MATIC in USD
 
     // uint256 public EXCHANGE_RATE = uint256(getLatestPrice());
-    uint256 public EXCHANGE_RATE = uint(getLatestPrice());
+    uint256 public EXCHANGE_RATE = uint256(getLatestPrice());
     uint256 public deployedTime = block.timestamp;
 
     // Function: Buy $SpiderDAO (mint) token in exchange for $MATIC
@@ -45,8 +48,14 @@ contract SpidermanDAOToken is ERC20("Spiderman DAO", "SpiderDAO"),Ownable {
     // function 2: Redeem $SpiderDAO (burn) and get $MATIC back
     function redeem(uint256 _SpiderDAOToRedeem) public {
         // step 1: Check that the user has enough $SpiderDAO balance
-        require(block.timestamp < (deployedTime + 10 days), "REFUND_GUARANTEE_EXPIRED");
-        require(balanceOf(msg.sender) >= _SpiderDAOToRedeem,"INSUFFICIENT BALANCE");
+        require(
+            block.timestamp < (deployedTime + 10 days),
+            "REFUND_GUARANTEE_EXPIRED"
+        );
+        require(
+            balanceOf(msg.sender) >= _SpiderDAOToRedeem,
+            "INSUFFICIENT BALANCE"
+        );
 
         // step 2: Calculate the amount of $MATIC to get back from burning $SpiderDAO
         // MaticAmount = 10 / 1.3706 (current price of matic)
@@ -60,15 +69,18 @@ contract SpidermanDAOToken is ERC20("Spiderman DAO", "SpiderDAO"),Ownable {
         // step 4: Transfer $MATIC to the user
         payable(msg.sender).transfer(MaticAmount);
     }
-    
-    function getMaticBalance() public view returns(uint256){
+
+    function getMaticBalance() public view returns (uint256) {
         return address(this).balance;
     }
 
-    function withdraw() external onlyOwner  {
-        require(block.timestamp > (deployedTime + 10 days), "REFUND_GUARANTEE_RUNNING");
-          uint256 amount = address(this).balance;
-          (bool sent, ) =  owner().call{value: amount}("");
-          require(sent, "Failed to send Ether");
+    function withdraw() external onlyOwner {
+        require(
+            block.timestamp > (deployedTime + 10 days),
+            "REFUND_GUARANTEE_RUNNING"
+        );
+        uint256 amount = address(this).balance;
+        (bool sent, ) = owner().call{value: amount}("");
+        require(sent, "Failed to send Ether");
     }
 }
